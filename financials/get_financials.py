@@ -1,9 +1,9 @@
+from flask import Flask, render_template
 import requests
 import re
 import json
 from credentials import url, token
 import sqlite3
-
 
 # how many history to show in years
 years_behind = "4"
@@ -88,35 +88,43 @@ def display_financials(felement):
         for k, v in json_data[felement][i].items():
             if k not in dont_display:
                 print("{: >25} {: >25}".format(k, v))
-                # Insert data into SQLite
-                c.execute('INSERT INTO stocks VALUES (?, ?, ?)', (short_date, k, v))
+                with sqlite3.connect("db/" + ticker + '.db') as conn:
+                    c = conn.cursor()
+                    # Insert data into SQLite
+                    c.execute('INSERT INTO stocks VALUES (?, ?, ?)', (short_date, k, v))
+                    conn.commit()
 
 
-print(get_pe_ratio(ticker))
-print(get_ttmeps(ticker))
+def return_financials():
+    # SQLITE
+    with sqlite3.connect("db/" + ticker + '.db') as conn:
+        c = conn.cursor()
+        # check if table exists
+        c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='stocks'")
+        if c.fetchone()[0] != 1:
+            # Create table
+            sql_cmd = 'CREATE TABLE stocks (date text, key text, value real)'
+            c.execute(sql_cmd)
+        conn.commit()
 
-exit()
+    financials = ['financials', 'balance-sheet', 'cash-flow', 'income']
+    for f in financials:
+        print("<br>")
+        print(Format.underline + f.upper() + Format.end)
+        display_financials(f)
+    print(get_pe_ratio(ticker))
+    print(get_ttmeps(ticker))
 
-# SQLITE
-conn = sqlite3.connect("db/" + ticker + '.db')
-c = conn.cursor()
+app = Flask(__name__)
 
-# check if table exists
-c.execute("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='stocks'")
-if c.fetchone()[0] != 1:
-    # Create table
-    sql_cmd = 'CREATE TABLE stocks (date text, key text, value real)'
-    c.execute(sql_cmd)
 
-financials = ['financials', 'balance-sheet', 'cash-flow', 'income']
-for f in financials:
-    print
-    print(Format.underline + f.upper() + Format.end)
-    display_financials(f)
+@app.route('/')
+def home():
 
-# Save (commit) the changes
-conn.commit()
 
-# We can also close the connection if we are done with it.
-# Just be sure any changes have been committed or they will be lost.
-conn.close()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
