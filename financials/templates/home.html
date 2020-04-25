@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for ticker in ticker %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ ticker.stock }}</a>
+              <small class="text-muted">{{ ticker.date_posted }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ ticker.key }}</a></h2>
+            <p class="article-content">{{ ticker.value }}</p>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
