@@ -15,13 +15,13 @@ token = 'Tsk_[...]'
 Create the SQLite DB:
 ```
 from financials import db
-from datetime import datetime
+import datetime
 from financials.models import Ticker
-db.create.all()
+db.create_all()
 ```
 Add some demo data manually:
 ```
-stock = Ticker(stock='C', key='test', value='200', date_posted=datetime(2019, 10, 10, 10, 10), fy='2019')
+stock = Ticker(stock='FB', key='test', value='200', fy='2019')
 db.session.add(stock)
 db.session.commit()
 ```
@@ -39,12 +39,32 @@ fb.date_posted
 Ticker.query.get(1)
 ```
 
+SQLite queries:
+```
+$ sqlite3
+sqlite> .open financials/financials.db
+sqlite> .tables
+ticker
+sqlite> .schema ticker
+CREATE TABLE ticker (
+	id INTEGER NOT NULL, 
+	stock VARCHAR(5) NOT NULL, 
+	"key" VARCHAR(120) NOT NULL, 
+	value INTEGER NOT NULL, 
+	date_posted DATETIME DEFAULT (CURRENT_TIMESTAMP) NOT NULL, 
+	fy VARCHAR(4) NOT NULL, 
+	PRIMARY KEY (id)
+);
+sqlite> select * from ticker;
+1|FB|test|200|2020-04-26 17:06:34|2019
+```
+
 Clean the SQLite DB:
 ```
 db.drop_all()
 ```
 
-## Run the proj:
+## Run the project:
 ```
 python run.py
 ```
@@ -52,5 +72,7 @@ Then browse:
 http://127.0.0.1:5000/ 
 
 
-I've learn some Flask from here:
-https://github.com/CoreyMSchafer/code_snippets/tree/master/Python/Flask_Blog
+TODO:
+- drop DB or a mechanism to update the DB for each ticker
+- UX
+- add P/E ratio and EPS from API to the DB or UX

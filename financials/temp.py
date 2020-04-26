@@ -11,7 +11,7 @@ from credentials import url, token
         r = s.get(per_url)
         return r.text
 
-    # get the P/E Ratio from API
+    # get the Earnings per share from API
     def get_ttmeps(symbol):
         eps_url = url + "/stable/stock/" + ticker + "/stats/ttmEPS" + "?token=" + token
         # make the request

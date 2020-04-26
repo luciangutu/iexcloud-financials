@@ -1,6 +1,50 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for ticker in ticker %}
+    <div class="content-section">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Stock info</legend>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        {{ form.ticker.label(class="form-control-label") }}
+                        {% if form.ticker.errors %}
+                            {{ form.ticker(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.ticker.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.ticker(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-4">
+                        {{ form.years_behind.label(class="form-control-label") }}
+                        {% if form.years_behind.errors %}
+                            {{ form.years_behind(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.years_behind.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.years_behind(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group row">
+                <div class="col-sm-2">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+                <div class="checkbox">
+                 <label><input type="checkbox" name="update" value="">update</label>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% for ticker in ticker if ticker %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
