@@ -1,4 +1,10 @@
 # iexcloud-financials
+
+Take a look at https://iexcloud.io/docs/api/
+
+I'm getting the stocks financials from the iexcloud.io using their API.
+I'm aiming to have an easy way to identify if a company is worth investing in.
+
 ## Setup:
 
 Requirements:
